@@ -1,0 +1,17 @@
+{
+  "name": "mt-mongoose",
+  "version": "0.1.0",
+  "keywords": ["mongoose"],
+  "author": "BabuSrithar",
+  "dependencies": {
+    "continuation-local-storage":"3.1.7",
+    "mongoose":"4.4.14"
+  },
+  "devDependencies": {
+
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
