@@ -6,12 +6,12 @@ var getNamespace = require('continuation-local-storage').getNamespace;
 var MTMongoose = function () {
 };
 //Default tenant db which is used to perform useDB operation.
-MTMongoose.prototype.setMTDefaultDB = function (_defaultDB) {
+MTMongoose.prototype.setDefaultTenantDB = function (_defaultDB) {
     defaultDb = _defaultDB;
 };
 
 //Utility Method to set system(non tenant specific DB) Use this method, so that the model usage across tenant specific and non tenant specific will look same.
-MTMongoose.prototype.setSystemDB = function (_systemDb) {
+MTMongoose.prototype.setGlobalDB = function (_systemDb) {
     systemDb = _systemDb;
 };
 //Method used to set
@@ -28,14 +28,23 @@ MTMongoose.prototype.getTenantId = function () {
     return tenant_id;
 };
 
-MTMongoose.prototype.getMTModel = function (schemaObj) {
+var getMTModel = function (schemaObj) {
     var tenantDBId = this.getTenantId();
     var tenantDB = defaultDb.useDb(tenantDBId ? tenantDBId : "test");
     if (tenantDB) {
         return tenantDB.model(schemaObj.modelName ? schemaObj.modelName : schemaObj.name, schemaObj.schema)
     }
 };
-MTMongoose.prototype.getSystemModel = function (schemaObj) {
+var getSystemModel = function (schemaObj) {
     return systemDb.model(schemaObj.modelName ? schemaObj.modelName : schemaObj.name, schemaObj.schema)
 };
+
+MTMongoose.prototype.getModel = function (schemaObj) {
+    if(schemaObj.isGlobal){
+        return getSystemModel(schemaObj);
+    }else{
+        return getMTModel(schemaObj)
+    }
+};
+
 module.exports = new MTMongoose();

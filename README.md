@@ -20,10 +20,11 @@ Here is an example of how to create a mt-mongoose model
                 lastName: String
             }
         ),
-        name: "users"
+        name: "users",
+        isGlobal: false //attribute to tell if the model is in global DB across tenants or a tenant specific DB 
     };
     module.exports = function () {
-        return mt_mongoose.getMTModel(User);
+        return mt_mongoose.getModel(User);
     };
 </code></pre>
 
@@ -52,17 +53,25 @@ Create a middleware like this and add it to your app, after mongoose.createConne
     var bodyParser = require('body-parser');
     var methodOverride = require('method-override');
     var routes = require('./routes/index');
-    var base_express_service = require("base-express-service");
     var restify = require('express-restify-mongoose');
 
+    //Initialization of tenant specific default db and global db 
     var mongoose = require('mongoose');
-    var uri = 'mongodb://localhost/test1'; //this should come from config
-    defaultDb = mongoose.createConnection(uri);
+    var tenantDBUri = 'mongodb://localhost/test1'; //this should come from config
+    defaultTenantDb = mongoose.createConnection(tenantDBUri);
+    var globalDBUri = 'mongodb://localhost/global'; //this should come from config
+    globalDb = mongoose.createConnection(globalDBUri);
     var mt_mongoose= require("mt-mongoose");
-    mt_mongoose.setDefaultDB(defaultDb);
+    mt_mongoose.setDefaultTenantDB(defaultTenantDb); //Set default tenant specific DB
+    mt_mongoose.setGlobalDB(globalDb); //Set global db across tenants
+    
+    // Multi tenant middleware 
     app.use(function(req,res,next){
     mt_mongoose.setTenantId(req.query.tid);//example of fetching tenant id from a query parameter, this can be from use object , session etc.
     }); 
+
+    
+    //App's routes
     app.get('/index', function (req, res, next) {
         User().find(function (err, users) {
             if (err)
