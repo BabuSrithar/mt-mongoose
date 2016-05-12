@@ -32,7 +32,7 @@ Here is an example of how to create a mt-mongoose model
 The mt-mongoose model can be used exactly the same way as mongoose model itself. 
 The only deference is an extra function call brackets '()' when initializing.
 example:
-```
+```javascript
 router.get('/index', function (req, res, next) {
     User().find(function (err, users) {
         if (err)
@@ -44,7 +44,7 @@ router.get('/index', function (req, res, next) {
 
 ## Usage in Express APP(using a middleware)
 Create a middleware like this and add it to your app, after mongoose.createConnection is called
-```
+```javascript
     var express = require('express');
     var path = require('path');
     var favicon = require('serve-favicon');
