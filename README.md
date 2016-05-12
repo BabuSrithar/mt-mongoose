@@ -10,23 +10,23 @@ from actual business logic code. This can be used with standalone nodejs scripts
 
 ## Defining mt-mongoose model 
 Here is an example of how to create a mt-mongoose model
-<pre><code class="language-javascript">
-    var mongoose = require('mongoose');
-    var mt_mongoose = require("mt-mongoose");
-    User = {
-        schema: new mongoose.Schema({
-                userid: String,
-                firstName: String,
-                lastName: String
-            }
-        ),
-        name: "users",
-        isGlobal: false //attribute to tell if the model is in global DB across tenants or a tenant specific DB 
-    };
-    module.exports = function () {
-        return mt_mongoose.getModel(User);
-    };
-</code></pre>
+```javascript
+var mongoose = require('mongoose');
+var mt_mongoose = require("mt-mongoose");
+User = {
+    schema: new mongoose.Schema({
+            userid: String,
+            firstName: String,
+            lastName: String
+        }
+    ),
+    name: "users",
+    isGlobal: false //attribute to tell if the model is in global DB across tenants or a tenant specific DB 
+};
+module.exports = function () {
+    return mt_mongoose.getModel(User);
+};
+```
 
 ## Using mt-mongoose model 
 The mt-mongoose model can be used exactly the same way as mongoose model itself. 
