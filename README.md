@@ -45,31 +45,34 @@ router.get('/index', function (req, res, next) {
 ## Usage in Express APP(using a middleware)
 Create a middleware like this and add it to your app, after mongoose.createConnection is called
 ```javascript
-    var express = require('express');
+   var express = require('express');
     var path = require('path');
-    var favicon = require('serve-favicon');
-    var logger = require('morgan');
     var cookieParser = require('cookie-parser');
     var bodyParser = require('body-parser');
     var methodOverride = require('method-override');
-    var routes = require('./routes/index');
-    var restify = require('express-restify-mongoose');
-
-    //Initialization of tenant specific default db and global db 
+    var restify = require('express-restify-mt-mongoose');
+    
+    //App initialization and setting default handlers
+    var app = express();
+    app.use(bodyParser.json());
+    app.use(methodOverride());
+    
+    //Initialization of tenant specific default db and global db
     var mongoose = require('mongoose');
     var tenantDBUri = 'mongodb://localhost/test1'; //this should come from config
     defaultTenantDb = mongoose.createConnection(tenantDBUri);
     var globalDBUri = 'mongodb://localhost/global'; //this should come from config
     globalDb = mongoose.createConnection(globalDBUri);
-    var mt_mongoose= require("mt-mongoose");
+    var mt_mongoose = require("mt-mongoose");
     mt_mongoose.setDefaultTenantDB(defaultTenantDb); //Set default tenant specific DB
     mt_mongoose.setGlobalDB(globalDb); //Set global db across tenants
     
-    // Multi tenant middleware 
-    app.use(function(req,res,next){
-    mt_mongoose.setTenantId(req.query.tid);//example of fetching tenant id from a query parameter, this can be from use object , session etc.
-    }); 
-
+    // Multi tenant middleware
+    app.use(function (req, res, next) {
+        req._tid = req.query.tid;//example of fetching tenant id from a query parameter, this can be from user object , session etc.
+        mt_mongoose.setTenantId(req, res, next);
+    });
+    
     
     //App's routes
     app.get('/index', function (req, res, next) {
@@ -79,6 +82,16 @@ Create a middleware like this and add it to your app, after mongoose.createConne
             res.json(users);
         });
     });
+    
+    
+    var router = express.Router();
+    var User = require('./models/User');
+    //var util = require("./util/util");
+    restify.serve(router, User()); //example of using express-restify-mt-mongoose
+    app.use('/', router);
+    
+    module.exports = app;
+    app.listen(3001);
 ```
 
 
