@@ -1,6 +1,6 @@
 {
   "name": "mt-mongoose",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "keywords": ["mongoose"],
   "author": "BabuSrithar",
   "dependencies": {

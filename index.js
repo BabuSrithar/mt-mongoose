@@ -1,8 +1,9 @@
-var createNamespace = require('continuation-local-storage').createNamespace;
+var cls = require('continuation-local-storage');
+var createNamespace = cls.createNamespace;
 var mtMongooseSessionSet = createNamespace('mt-mongoose-session');
 var defaultDb = null;
 var systemDb = null;
-var getNamespace = require('continuation-local-storage').getNamespace;
+var getNamespace = cls.getNamespace;
 var MTMongoose = function () {
 };
 //Default tenant db which is used to perform useDB operation.
@@ -15,9 +16,9 @@ MTMongoose.prototype.setGlobalDB = function (_systemDb) {
     systemDb = _systemDb;
 };
 //Method used to set
-MTMongoose.prototype.setTenantId = function (tenantId) {
+MTMongoose.prototype.setTenantId = function (req, res, next) {
     mtMongooseSessionSet.run(function () {
-        mtMongooseSessionSet.set("tenant_id", tenantId);
+        mtMongooseSessionSet.set("tenant_id", req._tid);
         next();
     });
 };
