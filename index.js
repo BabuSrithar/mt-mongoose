@@ -29,22 +29,22 @@ MTMongoose.prototype.getTenantId = function () {
     return tenant_id;
 };
 
-var getMTModel = function (schemaObj) {
+MTMongoose.prototype.getMTModel = function (schemaObj) {
     var tenantDBId = this.getTenantId();
     var tenantDB = defaultDb.useDb(tenantDBId ? tenantDBId : "test");
     if (tenantDB) {
         return tenantDB.model(schemaObj.modelName ? schemaObj.modelName : schemaObj.name, schemaObj.schema)
     }
 };
-var getSystemModel = function (schemaObj) {
+MTMongoose.prototype.getSystemModel = function (schemaObj) {
     return systemDb.model(schemaObj.modelName ? schemaObj.modelName : schemaObj.name, schemaObj.schema)
 };
 
 MTMongoose.prototype.getModel = function (schemaObj) {
     if(schemaObj.isGlobal){
-        return getSystemModel(schemaObj);
+        return this.getSystemModel(schemaObj);
     }else{
-        return getMTModel(schemaObj)
+        return this.getMTModel(schemaObj)
     }
 };
 
