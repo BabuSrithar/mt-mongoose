@@ -5,7 +5,7 @@
   "author": "BabuSrithar",
   "dependencies": {
     "continuation-local-storage":"3.1.7",
-    "mongoose":"4.4.14"
+    "mongoose":"5.7.8"
   },
   "devDependencies": {
 
