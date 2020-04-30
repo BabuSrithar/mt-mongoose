@@ -1,9 +1,7 @@
-var cls = require('continuation-local-storage');
-var createNamespace = cls.createNamespace;
-var mtMongooseSessionSet = createNamespace('mt-mongoose-session');
+const { AsyncLocalStorage } = require('async_hooks');
+var mtMongooseStorage = new AsyncLocalStorage();
 var defaultDb = null;
 var systemDb = null;
-var getNamespace = cls.getNamespace;
 var MTMongoose = function () {
 };
 //Default tenant db which is used to perform useDB operation.
@@ -17,16 +15,11 @@ MTMongoose.prototype.setGlobalDB = function (_systemDb) {
 };
 //Method used to set
 MTMongoose.prototype.setTenantId = function (req, res, next) {
-    mtMongooseSessionSet.run(function () {
-        mtMongooseSessionSet.set("tenant_id", req._tid);
-        next();
-    });
+    mtMongooseStorage.run(req['_tid'], next);
 };
 
 MTMongoose.prototype.getTenantId = function () {
-    var mtMongooseSessionGet = getNamespace('mt-mongoose-session');
-    var tenant_id = mtMongooseSessionGet.get("tenant_id");
-    return tenant_id;
+    return mtMongooseStorage.getStore();
 };
 
 MTMongoose.prototype.getMTModel = function (schemaObj) {
