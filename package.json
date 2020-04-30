@@ -4,11 +4,11 @@
   "keywords": ["mongoose"],
   "author": "BabuSrithar",
   "dependencies": {
-    "continuation-local-storage":"3.1.7",
-    "mongoose":"5.7.8"
   },
   "devDependencies": {
-
+  },
+  "peerDependencies": {
+    "mongoose":"^5.7.8"
   },
   "main": "index.js",
   "scripts": {
